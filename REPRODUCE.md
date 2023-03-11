@@ -37,7 +37,7 @@ source env/bin/activate
 
 ### Download Dias
 ```bash
-git clone https://github.com/ADAPT-uiuc/dias
+git clone https://github.com/ADAPT-uiuc/dias --single-branch -b vldb2023
 ```
 
 Set the environmental variable `DIAS_ROOT` to where the folder `dias` got cloned:

@@ -1,4 +1,5 @@
 import os
+import json
 
 def get_nb_source_cells(nb_as_json):
   source_cells = []
@@ -23,6 +24,12 @@ def get_nb_source_cells(nb_as_json):
     source_cells.append(source)
   
   return source_cells
+
+def open_and_get_source_cells(nb_path):
+  f = open(nb_path)
+  nb_as_json = json.load(f)
+  f.close()
+  return get_nb_source_cells(nb_as_json)
 
 def extract_json_cell_stats(s: str):
   # Yes, I know I can use regular expressions but the

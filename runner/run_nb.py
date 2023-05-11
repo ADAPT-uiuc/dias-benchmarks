@@ -9,12 +9,6 @@ import glob
 
 import bench_utils
 
-def open_and_get_source_cells(nb_path):
-  f = open(nb_path)
-  nb_as_json = json.load(f)
-  f.close()
-  return bench_utils.get_nb_source_cells(nb_as_json)
-
 def run_nb(nb_dir, enable_rewriter: bool, modin_cores: int, less_replication: bool, no_sliced_exec: bool, rewr_stats: bool):
   split = nb_dir.split('/')
   kernel_user = split[-2]
@@ -22,7 +16,7 @@ def run_nb(nb_dir, enable_rewriter: bool, modin_cores: int, less_replication: bo
 
   nb_file = "bench.ipynb"
   nb_path = "/".join((nb_dir, "src", nb_file))
-  source_cells = open_and_get_source_cells(nb_path)
+  source_cells = bench_utils.open_and_get_source_cells(nb_path)
 
   # Don't do the following. You'll mess the cell index (i.e., we won't know that it is the nth cell)
   # source_cells = [s for s in source_cells if s.strip() != ""]

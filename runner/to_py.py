@@ -21,8 +21,21 @@
 # TODO: Currently, it's unclear whether this is the best way to measure. Maybe
 # it's better to the rewrite "offline" to generate the rewritten code, and run
 # that as a Python file. This cannot be done for the apply() patterns though,
-# which is why I feel this is better because it measures every pattern with
-# the same yardstick.
+# which is why I feel this is better because it measures every pattern with the
+# same yardstick.
+#
+# TODO: Intersperse calls to `ray memory`. The main problem of the
+# ray_memory_sampler.sh is that it runs in parallel. It calls `ray memory` which
+# is very slow to query. Because it is running in parallel, the notebook doesn't
+# wait for queries to finish and we may miss a query that would give us a bigger
+# memory consumption, thereby missing the actual max memory consumption. If we
+# intersperse _inside_ the .py, that won't be a problem. However, this may
+# create another problem which is that this may tamper with the runtime
+# measurements of the actual operations in the notebook. For example, it's
+# possible that calling `ray memory` will clear the cache, which would otherwise
+# allow for locality later in the notebook. So, we should do a different run for
+# memory and runtime measurements, where, for the runtime measurements, we won't
+# include the calls to `ray memory`.
 
 #----------------------------------------
 import bench_utils

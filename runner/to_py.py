@@ -30,9 +30,12 @@ import sys
 
 nb_path = sys.argv[1]
 assert nb_path.endswith(".ipynb")
+base_path = nb_path.split('.ipynb')[0]
+py_file = open(f"{base_path}.py", "w")
+base_name = base_path.split('/')[-1]
 
-def print_(s):
-  print(s, end="")
+def gen(s):
+  py_file.write(s + "\n")
 
 def cell_doesnt_contain_magic(cell):
   for line in cell.splitlines():
@@ -42,12 +45,13 @@ def cell_doesnt_contain_magic(cell):
   return True
 
 # imports
-print("import dias.rewriter")
-print("import time")
-print("import sys")
-print("from IPython import get_ipython")
+gen("import dias.rewriter")
+gen("import time")
+gen("import sys")
+gen("import json")
+gen("from IPython import get_ipython")
 
-print("""
+gen("""
 _DIAS_ip = get_ipython()
 if _DIAS_ip is None:
   print("IPython is required")
@@ -55,7 +59,7 @@ if _DIAS_ip is None:
 """)
 
 # Introduce cell stats
-print("_DIAS_cell_stats = []")
+gen("_DIAS_cell_stats = []")
 
 source_cells = bench_utils.open_and_get_source_cells(nb_path)
 # Just convenience to match jupyter nbconvert. Some editors recognize
@@ -102,9 +106,20 @@ _DIAS_stats['patts-hit'] = _DIAS_patts_hit
 _DIAS_cell_stats.append(_DIAS_stats)
 """
   
-  print_(new_cell)
+  gen(new_cell)
 
 # END FOR LOOP #
 
 ## Testing
-print("print(_DIAS_cell_stats)")
+gen("print(_DIAS_cell_stats)")
+
+## Output the stats to a JSON file
+gen(f"""
+out_json = dict()
+out_json['cells'] = _DIAS_cell_stats
+json_f = open("{base_name}.json", "w")
+json.dump(out_json, fp=json_f, indent=2)
+json_f.close()
+""")
+
+py_file.close()

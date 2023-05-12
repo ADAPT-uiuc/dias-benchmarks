@@ -17,6 +17,13 @@
 # Python. The only reason would be to save something in overheads, and I don't
 # think the savings will be big.
 
+#
+# TODO: Currently, it's unclear whether this is the best way to measure. Maybe
+# it's better to the rewrite "offline" to generate the rewritten code, and run
+# that as a Python file. This cannot be done for the apply() patterns though,
+# which is why I feel this is better because it measures every pattern with
+# the same yardstick.
+
 #----------------------------------------
 import bench_utils
 import sys

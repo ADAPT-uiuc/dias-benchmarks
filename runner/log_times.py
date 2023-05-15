@@ -87,6 +87,8 @@ import json
 import sys
 import time
 import os
+import subprocess
+import re
 
 _IREWR_ipython = get_ipython()
 if _IREWR_ipython is None:
@@ -115,26 +117,23 @@ if _IREWR_run_config['modin_cores'] != -1:
   os.environ["MODIN_CPUS"] = str(_IREWR_run_config['modin_cores'])
 if _IREWR_run_config['less_replication']:
   os.environ["IREWR_LESS_REPLICATION"] = "True"
-if _IREWR_run_config['no_sliced_exec']:
-  os.environ["_IREWR_DISABLE_SLICED_EXEC"] = "True"
-if _IREWR_run_config['rewr_stats']:
-  os.environ["_IREWR_JSON_STATS"] = "True"
 
+_IREWR_rewrite = (_IREWR_run_config['rewrite'] == 1)
 
 import bench_utils
-# THIS IMPORT HAS TO HAPPEN AFTER SETTING THE ENVIROMENTAL VARIABLES.
-# THE REWRITER READS SOME OF THEM.
-assert "DIAS_ROOT" in os.environ
-sys.path.append(os.path.join(os.environ["DIAS_ROOT"], "rewriter"))
-import rewriter
+if _IREWR_rewrite:
+  assert "DIAS_ROOT" in os.environ
+  sys.path.insert(1, os.environ["DIAS_ROOT"])
+  # Use the rewriter as a lib. Note, however, that importing the rewriter will
+  # overwrite apply().
+  os.environ["_IREWR_USE_AS_LIB"] = "True"
+  import dias.rewriter
 
 _IREWR_error_file = _IREWR_run_config['error_file']
 _IREWR_times_file = _IREWR_run_config['output_times_json']
-
-def _IREWR_rewrite(cell):
-  if cell.strip() != "":
-    return "%%rewrite\n" + cell
-  return "%%rewrite\n_ = 0"
+_IREWR_measure_modin_mem = _IREWR_run_config['measure_modin_mem']
+if _IREWR_measure_modin_mem: # We should enable this option only if we're running with Modin
+  assert _IREWR_run_config['modin_cores'] != -1
 
 def _IREWR_err_txt(ctx):
   return \
@@ -148,31 +147,90 @@ f"""
 
 _IREWR_ipython.run_line_magic('cd', _IREWR_run_config['src_dir'])
 
-# Add %%rewrite
-if _IREWR_run_config['rewrite'] == 1:
-  for _IREWR_i in range(0, len(_IREWR_run_config['cells'])):
-    _IREWR_run_config['cells'][_IREWR_i] = _IREWR_rewrite(_IREWR_run_config['cells'][_IREWR_i])
-
 _IREWR_source_cells = _IREWR_run_config['cells']
 
-_IREWR_times = []
+def report_on_fail(_IREWR_ctx):
+  global _IREWR_error_file
+  bench_utils.write_to_file(_IREWR_error_file, _IREWR_err_txt(_IREWR_ctx))
+  sys.exit(1)
+
+_IREWR_cells = []
+_IREWR_max_modin_mem = 0
+_IREWR_max_modin_disk = 0
 for _IREWR_cell_idx, _IREWR_cell in enumerate(_IREWR_source_cells):
-  _IREWR_start = time.perf_counter_ns()
-  _IREWR_res = _IREWR_ipython.run_cell(_IREWR_cell, silent=True)
-  _IREWR_end = time.perf_counter_ns()
-  # Unfortunately, this will not catch all the errors. The caller has to do more work
-  # by checking the stdout.
-  if not _IREWR_res.success:
-    # TODO: Should we dump anything else? Like ipython.user_ns
+
+  # This will not catch all failures. The caller has to check the stdout
+  # of this script.
+  _IREWR_ip_run_res = None
+  if _IREWR_rewrite:
+    dias.rewriter._DIAS_apply_overhead_ns = 0
+    dias.rewriter._DIAS_apply_pat = None
+
+    ## Patt match and rewrite
+    _DIAS_rewrite_start = time.perf_counter_ns()
+    _DIAS_new_source, _DIAS_patts_hit = dias.rewriter.rewrite_ast_from_source(_IREWR_cell)
+    _DIAS_rewrite_end = time.perf_counter_ns()
+    _DIAS_rewrite_ns = _DIAS_rewrite_end - _DIAS_rewrite_start
+
+    ## Execute
+    _DIAS_exec_start = time.perf_counter_ns()
+    _IREWR_ip_run_res = _IREWR_ipython.run_cell(_DIAS_new_source)
+    _DIAS_exec_end = time.perf_counter_ns()
+    _DIAS_exec_ns = _DIAS_exec_end - _DIAS_exec_start
+
+    # Finish stats
+    _DIAS_overhead_ns = _DIAS_rewrite_ns + dias.rewriter._DIAS_apply_overhead_ns
+
+    _IREWR_cell_stats = dict()
+    _IREWR_cell_stats['raw'] = _IREWR_cell
+    _IREWR_cell_stats['rewrite-ns'] = _DIAS_rewrite_ns
+    _IREWR_cell_stats['overhead-ns'] = _DIAS_overhead_ns
+    _IREWR_cell_stats['exec-ns'] = _DIAS_exec_ns
+    _IREWR_cell_stats['total-ns'] = _DIAS_rewrite_ns + _DIAS_exec_ns
+    if dias.rewriter._DIAS_apply_pat != None:
+      _DIAS_the_pat = dias.rewriter._DIAS_apply_pat
+      _DIAS_patts_hit[_DIAS_the_pat.name] = 1
+    _IREWR_cell_stats['patts-hit'] = _DIAS_patts_hit
+  else:
+    _IREWR_start = time.perf_counter_ns()
+    _IREWR_ip_run_res = _IREWR_ipython.run_cell(_IREWR_cell, silent=True)
+    _IREWR_end = time.perf_counter_ns()
+    _IREWR_diff_in_ns = _IREWR_end - _IREWR_start
+    _IREWR_cell_stats = dict()
+    _IREWR_cell_stats['raw'] = _IREWR_cell
+    _IREWR_cell_stats['total-ns'] = _IREWR_diff_in_ns
+  
+  if not _IREWR_ip_run_res.success:
     _IREWR_ctx = (_IREWR_cell_idx, _IREWR_cell)
-    bench_utils.write_to_file(_IREWR_error_file, _IREWR_err_txt(_IREWR_ctx))
-    sys.exit(1)
-  _IREWR_diff_in_ns = _IREWR_end - _IREWR_start
-  _IREWR_in_ms = bench_utils.ns_to_ms(_IREWR_diff_in_ns)
-  _IREWR_times.append(_IREWR_in_ms)
+    report_on_fail(_IREWR_ctx)
+
+  if _IREWR_measure_modin_mem:
+    ray_sample = subprocess.run(["ray", "memory", "--stats-only"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    assert ray_sample.returncode == 0
+    ray_sample_out = ray_sample.stdout.decode()
+    match_mem = re.search("Objects consumed by Ray tasks: (\d+) MiB", ray_sample_out)
+    # Some files will contain nothing.
+    if match_mem:
+      _IREWR_max_modin_mem = max(_IREWR_max_modin_mem, int(match_mem.group(1)))
+    
+    match_disk = re.search("Spilled (\d+) MiB", ray_sample_out)
+    if match_disk:
+      _IREWR_max_modin_disk = max(_IREWR_max_modin_disk, match_disk.group(1))
+  # END if _IREWR_measure_modin_mem #
+
+  _IREWR_cells.append(_IREWR_cell_stats)
+  
+
 
 _IREWR_f = open(_IREWR_times_file, 'w')
 _IREWR_json_d = dict()
-_IREWR_json_d['times'] = _IREWR_times
+if _IREWR_measure_modin_mem:
+  _IREWR_json_d['max-mem-in-mb'] = _IREWR_max_modin_mem
+  _IREWR_json_d['max-disk-in-mb'] = _IREWR_max_modin_disk
+else:
+  # Signify that _IREWR_measure_modin_mem should NOT be true
+  # for time measurements. Only output times if it's not
+  # enabled.
+  _IREWR_json_d['cells'] = _IREWR_cells
 json.dump(_IREWR_json_d, _IREWR_f, indent=2)
 _IREWR_f.close()

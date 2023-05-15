@@ -37,7 +37,7 @@ source env/bin/activate
 
 ### Download Dias
 ```bash
-git clone https://github.com/ADAPT-uiuc/dias --single-branch -b vldb2023
+git clone https://github.com/ADAPT-uiuc/dias --single-branch -b vldb2023_rev
 ```
 
 Set the environmental variable `DIAS_ROOT` to where the folder `dias` got cloned:
@@ -47,7 +47,7 @@ export DIAS_ROOT=<dias root>
 
 ### Download the benchmark infrastructure and code (this repo)
 ```bash
-git clone https://github.com/ADAPT-uiuc/dias-benchmarks
+git clone https://github.com/ADAPT-uiuc/dias-benchmarks --single-branch -b vldb2023_rev
 ```
 
 ### Install library dependencies

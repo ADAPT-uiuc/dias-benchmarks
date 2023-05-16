@@ -204,7 +204,8 @@ for _IREWR_cell_idx, _IREWR_cell in enumerate(_IREWR_source_cells):
     _IREWR_ctx = (_IREWR_cell_idx, _IREWR_cell)
     report_on_fail(_IREWR_ctx)
 
-  if _IREWR_measure_modin_mem:
+  modin_has_been_imported = "modin.pandas" in sys.modules
+  if _IREWR_measure_modin_mem and modin_has_been_imported:
     ray_sample = subprocess.run(["ray", "memory", "--stats-only"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     assert ray_sample.returncode == 0
     ray_sample_out = ray_sample.stdout.decode()

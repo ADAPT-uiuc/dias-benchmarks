@@ -1,6 +1,7 @@
 #!/bin/bash
 
 mkdir -p stats
+echo "######### CONFIG: ${@} ############"
 for i in {0..9}
 do
   echo "------- ITERATION ${i} -----------"

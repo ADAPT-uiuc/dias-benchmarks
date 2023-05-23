@@ -9,19 +9,13 @@ import glob
 
 import bench_utils
 
-def run_nb(nb_dir, enable_rewriter: bool, modin_cores: int, less_replication: bool, measure_modin_mem: bool):
-  split = nb_dir.split('/')
-  kernel_user = split[-2]
-  kernel_slug = split[-1]
-
-  nb_file = "bench.ipynb"
-  nb_path = "/".join((nb_dir, "src", nb_file))
+def run_nb_file(nb_path, enable_rewriter: bool, modin_cores: int, less_replication: bool, measure_modin_mem: bool):
   source_cells = bench_utils.open_and_get_source_cells(nb_path)
 
   # Don't do the following. You'll mess the cell index (i.e., we won't know that it is the nth cell)
   # source_cells = [s for s in source_cells if s.strip() != ""]
 
-  src_dir = "/".join((nb_dir, "src"))
+  src_dir = os.path.dirname(nb_path)
 
   def run_config(add_rewrite, source_cells, error_file, times_file, 
                 mem_usg_file, modin_cores, less_replication, measure_modin_mem):
@@ -65,7 +59,7 @@ def run_nb(nb_dir, enable_rewriter: bool, modin_cores: int, less_replication: bo
   if "Traceback" in the_stdout:
     succ = False
   if not succ:
-    print(f"There was an error while running the original {kernel_user}/{kernel_slug}. See {err_file}, stderr.txt and stdout.txt")
+    print(f"There was an error while running {nb_path}. See {err_file}, stderr.txt and stdout.txt")
     bench_utils.write_to_file("stdout.txt", res.stdout.decode())
     bench_utils.write_to_file("stderr.txt", res.stderr.decode())
     return False
@@ -95,3 +89,9 @@ def run_nb(nb_dir, enable_rewriter: bool, modin_cores: int, less_replication: bo
   f.close()
 
   return True
+
+def run_nb_paper(nb_dir, enable_rewriter: bool, modin_cores: int, less_replication: bool, measure_modin_mem: bool):
+  nb_file = "bench.ipynb"
+  nb_path = "/".join((nb_dir, "src", nb_file))
+
+  return run_nb_file(nb_path, enable_rewriter, modin_cores, less_replication, measure_modin_mem)

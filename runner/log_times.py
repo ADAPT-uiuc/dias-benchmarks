@@ -191,6 +191,7 @@ for _IREWR_cell_idx, _IREWR_cell in enumerate(_IREWR_source_cells):
       _DIAS_the_pat = dias.rewriter._DIAS_apply_pat
       _DIAS_patts_hit[_DIAS_the_pat.name] = 1
     _IREWR_cell_stats['patts-hit'] = _DIAS_patts_hit
+    _IREWR_cell_stats['rewritten'] = _DIAS_new_source
   else:
     _IREWR_start = time.perf_counter_ns()
     _IREWR_ip_run_res = _IREWR_ipython.run_cell(_IREWR_cell, silent=True)

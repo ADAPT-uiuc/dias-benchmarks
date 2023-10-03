@@ -71,7 +71,7 @@ for nb in nbs:
   kernel_slug = nb.split('/')[1]
   full_path = prefix+"/"+nb
   print(f"--- RUNNING: {kernel_user}/{kernel_slug}")
-  succ = run_nb.run_nb(full_path, args.rewriter, args.modin, args.less_replication, args.measure_modin_mem)
+  succ = run_nb.run_nb_paper(full_path, args.rewriter, args.modin, args.less_replication, args.measure_modin_mem)
   assert succ
   res = subprocess.run(["mv", "stats.json", f"stats/{kernel_user}_{kernel_slug}.json"])
   assert res.returncode == 0

@@ -1,13 +1,3 @@
-## Ideal System
-
-The system we ran the experiments on had:
-- 12-core AMD Ryzen 5900X
-- 32GB of main memory
-- Samsung 980 PRO NVMe SSD, 256GB
-- Ubuntu 22.04.1 LTS.
-
-To reproduce the results as accurately, please do not run on a VM and use a fast disk.
-
 ## Setting Up the Python Environment
 
 ```bash
@@ -35,24 +25,15 @@ source env/bin/activate
 
 ## Setup Artifact
 
-### Download Dias
-```bash
-git clone https://github.com/ADAPT-uiuc/dias --single-branch -b vldb2023_rev
 ```
-
-Set the environmental variable `DIAS_ROOT` to where the folder `dias` got cloned:
-```bash
-export DIAS_ROOT=<dias root>
-```
-
 ### Download the benchmark infrastructure and code (this repo)
 ```bash
-git clone https://github.com/ADAPT-uiuc/dias-benchmarks --single-branch -b vldb2023_rev
+git clone https://github.com/baziotis/cs598ms-nbs --single-branch
 ```
 
 ### Install library dependencies
 ```bash
-cd <dias-benchmarks root>/runner
+cd <cs598ms-nbs root>/runner
 pip install -r requirements.txt
 ```
 
@@ -82,7 +63,7 @@ You can use the script `copier.sh` that comes with the dataset folder (i.e., `di
 cd <dias-benchmarks root>/runner
 ```
 
-### Quiescing the machine
+### Quiescing the machine (Optional)
 
 You can use the following script to quiesce the machine in the same way we did. If you have an Intel, open this script and modify it slightly. It has instructions.
 
@@ -105,30 +86,7 @@ This requires `sudo` because we want to support writing in `/kaggle/working`, wh
 
 You can review the `run_all.py` options with `python run_all.py --help` to see what different configurations can be run.
 
-To run all the experiments needed for the paper plots, run the following:
-```bash
-./paper_exps.sh
+Here is an example:
 ```
-
-### Producing the plots
-
-The above script should produce the following folders:
+python run_all.py --less_replication
 ```
-stats-rewr_OFF-modin_12-repl_LESS-sliced_exec_ON
-stats-rewr_OFF-modin_4-repl_LESS-sliced_exec_ON
-stats-rewr_OFF-modin_8-repl_LESS-sliced_exec_ON
-stats-rewr_OFF-modin_OFF-repl_LESS-sliced_exec_ON
-stats-rewr_OFF-modin_OFF-repl_STD-sliced_exec_ON
-stats-rewr_ON-modin_OFF-repl_LESS-sliced_exec_ON
-stats-rewr_ON-modin_OFF-repl_STD-sliced_exec_OFF
-stats-rewr_ON-modin_OFF-repl_STD-sliced_exec_ON
-stats-rewr_stats
-```
-
-We move those to `<dias-benchmarks root>/stats` (where `stats.ipynb` is) e.g., with:
-```bash
-cd `<dias-benchmarks root>`
-mv runner/stats* stats
-```
-
-Then, you can just run `stats.ipynb` to produce the plots.

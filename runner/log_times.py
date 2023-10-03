@@ -108,7 +108,6 @@ except:
 _IREWR_f.close()
 
 # Set enviromental variables used in the notebooks
-# and the rewriter to run code conditionally.
 if _IREWR_run_config['modin_cores'] != -1:
   os.environ["IREWR_WITH_MODIN"] = "True"
   # See: https://modin.readthedocs.io/en/stable/getting_started/using_modin/using_modin_locally.html#advanced-configuring-the-resources-modin-uses
@@ -118,16 +117,7 @@ if _IREWR_run_config['modin_cores'] != -1:
 if _IREWR_run_config['less_replication']:
   os.environ["IREWR_LESS_REPLICATION"] = "True"
 
-_IREWR_rewrite = (_IREWR_run_config['rewrite'] == 1)
-
 import bench_utils
-if _IREWR_rewrite:
-  assert "DIAS_ROOT" in os.environ
-  sys.path.insert(1, os.environ["DIAS_ROOT"])
-  # Use the rewriter as a lib. Note, however, that importing the rewriter will
-  # overwrite apply().
-  os.environ["_IREWR_USE_AS_LIB"] = "True"
-  import dias.rewriter
 
 _IREWR_error_file = _IREWR_run_config['error_file']
 _IREWR_times_file = _IREWR_run_config['output_times_json']
@@ -162,44 +152,13 @@ for _IREWR_cell_idx, _IREWR_cell in enumerate(_IREWR_source_cells):
   # This will not catch all failures. The caller has to check the stdout
   # of this script.
   _IREWR_ip_run_res = None
-  if _IREWR_rewrite:
-    dias.rewriter._DIAS_apply_overhead_ns = 0
-    dias.rewriter._DIAS_apply_pat = None
-
-    ## Patt match and rewrite
-    _DIAS_rewrite_start = time.perf_counter_ns()
-    _DIAS_new_source, _DIAS_patts_hit = dias.rewriter.rewrite_ast_from_source(_IREWR_cell)
-    _DIAS_rewrite_end = time.perf_counter_ns()
-    _DIAS_rewrite_ns = _DIAS_rewrite_end - _DIAS_rewrite_start
-
-    ## Execute
-    _DIAS_exec_start = time.perf_counter_ns()
-    _IREWR_ip_run_res = _IREWR_ipython.run_cell(_DIAS_new_source)
-    _DIAS_exec_end = time.perf_counter_ns()
-    _DIAS_exec_ns = _DIAS_exec_end - _DIAS_exec_start
-
-    # Finish stats
-    _DIAS_overhead_ns = _DIAS_rewrite_ns + dias.rewriter._DIAS_apply_overhead_ns
-
-    _IREWR_cell_stats = dict()
-    _IREWR_cell_stats['raw'] = _IREWR_cell
-    _IREWR_cell_stats['rewrite-ns'] = _DIAS_rewrite_ns
-    _IREWR_cell_stats['overhead-ns'] = _DIAS_overhead_ns
-    _IREWR_cell_stats['exec-ns'] = _DIAS_exec_ns
-    _IREWR_cell_stats['total-ns'] = _DIAS_rewrite_ns + _DIAS_exec_ns
-    if dias.rewriter._DIAS_apply_pat != None:
-      _DIAS_the_pat = dias.rewriter._DIAS_apply_pat
-      _DIAS_patts_hit[_DIAS_the_pat.name] = 1
-    _IREWR_cell_stats['patts-hit'] = _DIAS_patts_hit
-    _IREWR_cell_stats['rewritten'] = _DIAS_new_source
-  else:
-    _IREWR_start = time.perf_counter_ns()
-    _IREWR_ip_run_res = _IREWR_ipython.run_cell(_IREWR_cell, silent=True)
-    _IREWR_end = time.perf_counter_ns()
-    _IREWR_diff_in_ns = _IREWR_end - _IREWR_start
-    _IREWR_cell_stats = dict()
-    _IREWR_cell_stats['raw'] = _IREWR_cell
-    _IREWR_cell_stats['total-ns'] = _IREWR_diff_in_ns
+  _IREWR_start = time.perf_counter_ns()
+  _IREWR_ip_run_res = _IREWR_ipython.run_cell(_IREWR_cell, silent=True)
+  _IREWR_end = time.perf_counter_ns()
+  _IREWR_diff_in_ns = _IREWR_end - _IREWR_start
+  _IREWR_cell_stats = dict()
+  _IREWR_cell_stats['raw'] = _IREWR_cell
+  _IREWR_cell_stats['total-ns'] = _IREWR_diff_in_ns
   
   if not _IREWR_ip_run_res.success:
     _IREWR_ctx = (_IREWR_cell_idx, _IREWR_cell)

@@ -9,7 +9,7 @@ import glob
 
 import bench_utils
 
-def run_nb_file(nb_path, enable_rewriter: bool, modin_cores: int, less_replication: bool, measure_modin_mem: bool):
+def run_nb_file(nb_path, modin_cores: int, less_replication: bool, measure_modin_mem: bool):
   source_cells = bench_utils.open_and_get_source_cells(nb_path)
 
   # Don't do the following. You'll mess the cell index (i.e., we won't know that it is the nth cell)
@@ -17,11 +17,10 @@ def run_nb_file(nb_path, enable_rewriter: bool, modin_cores: int, less_replicati
 
   src_dir = os.path.dirname(nb_path)
 
-  def run_config(add_rewrite, source_cells, error_file, times_file, 
+  def run_config(source_cells, error_file, times_file, 
                 mem_usg_file, modin_cores, less_replication, measure_modin_mem):
     config = dict()
     config['src_dir'] = src_dir
-    config['rewrite'] = 1 if add_rewrite else 0
     config['cells'] = source_cells
     config['error_file'] = error_file
     config['output_times_json'] = times_file
@@ -52,7 +51,7 @@ def run_nb_file(nb_path, enable_rewriter: bool, modin_cores: int, less_replicati
   err_file = pwd + '/' + 'error.txt'
   times_file = pwd + '/' + 'times.json'
   mem_usg_file = pwd + '/' + 'mem.txt'
-  succ, res = run_config(enable_rewriter, source_cells, err_file, times_file,
+  succ, res = run_config(source_cells, err_file, times_file,
                          mem_usg_file, modin_cores, less_replication, measure_modin_mem)
   the_stdout = res.stdout.decode()
   # We may have an exception which is not denoted as error unfortunately. We have to search the stdout.
@@ -90,8 +89,8 @@ def run_nb_file(nb_path, enable_rewriter: bool, modin_cores: int, less_replicati
 
   return True
 
-def run_nb_paper(nb_dir, enable_rewriter: bool, modin_cores: int, less_replication: bool, measure_modin_mem: bool):
+def run_nb_paper(nb_dir, modin_cores: int, less_replication: bool, measure_modin_mem: bool):
   nb_file = "bench.ipynb"
   nb_path = "/".join((nb_dir, "src", nb_file))
 
-  return run_nb_file(nb_path, enable_rewriter, modin_cores, less_replication, measure_modin_mem)
+  return run_nb_file(nb_path, modin_cores, less_replication, measure_modin_mem)

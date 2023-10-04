@@ -10,7 +10,7 @@ parser = argparse.ArgumentParser(description='Run all benchmarks')
 # For the default number of cores in Modin: https://github.com/modin-project/modin/blob/b998925d9e34bdb5c0752abb85a7a5769e0826f1/modin/config/envvars.py#L215)
 parser.add_argument('--modin', default=-1, type=int, metavar='NUM_CORES', help='If not specified, we use vanilla Pandas. Otherwise, we use Modin Pandas using NUM_CORES cores (Modin\'s default is your machine\'s number of threads).')
 parser.add_argument('--less_replication', action='store_true', help='Less replication of data.')
-parser.add_argument('--measure_modin_mem', action='store_true', help='Only measure memory consumption of Modin.')
+parser.add_argument('--measure_mem', action='store_true', help='Measure memory consumption (different methods are used for default and Modin).')
 
 args = parser.parse_args()
 
@@ -29,7 +29,7 @@ assert os.path.isdir("./stats")
 ver_file = open('stats/.version', 'w+')
 VER_modin = "modin_OFF" if args.modin == -1 else f"modin_{args.modin}"
 VER_repl = "repl_LESS" if args.less_replication else "repl_STD"
-VER_sliced_exec = "modin_mem_ON" if args.measure_modin_mem else "modin_mem_OFF"
+VER_sliced_exec = "mem_ON" if args.measure_mem else "mem_OFF"
 VER="-".join((VER_modin, VER_repl, VER_sliced_exec))
 ver_file.write(VER)
 ver_file.close()
@@ -69,7 +69,7 @@ for nb in nbs:
   kernel_slug = nb.split('/')[1]
   full_path = prefix+"/"+nb
   print(f"--- RUNNING: {kernel_user}/{kernel_slug}")
-  succ = run_nb.run_nb_paper(full_path, args.modin, args.less_replication, args.measure_modin_mem)
+  succ = run_nb.run_nb_paper(full_path, args.modin, args.less_replication, args.measure_mem)
   assert succ
   res = subprocess.run(["mv", "stats.json", f"stats/{kernel_user}_{kernel_slug}.json"])
   assert res.returncode == 0

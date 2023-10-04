@@ -9,7 +9,7 @@ import glob
 
 import bench_utils
 
-def run_nb_file(nb_path, modin_cores: int, less_replication: bool, measure_modin_mem: bool):
+def run_nb_file(nb_path, modin_cores: int, less_replication: bool, measure_mem: bool):
   source_cells = bench_utils.open_and_get_source_cells(nb_path)
 
   # Don't do the following. You'll mess the cell index (i.e., we won't know that it is the nth cell)
@@ -26,7 +26,7 @@ def run_nb_file(nb_path, modin_cores: int, less_replication: bool, measure_modin
     config['output_times_json'] = times_file
     config['modin_cores'] = modin_cores
     config['less_replication'] = less_replication
-    config['measure_modin_mem'] = measure_modin_mem
+    config['measure_modin_mem'] = measure_mem and modin_cores != -1
 
     config_filename = 'run_config.json'
     f = open(config_filename, 'w')
@@ -35,7 +35,10 @@ def run_nb_file(nb_path, modin_cores: int, less_replication: bool, measure_modin
 
     # We measure memory usage with GNU time -v. We will only take that into account later if Modin
     # is not enabled, because this is unreliable for Modin.
-    res = subprocess.run(["/usr/bin/time", "-v", "-o", mem_usg_file, "ipython", "log_times.py", f"{config_filename}"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    if measure_mem:
+      res = subprocess.run(["/usr/bin/time", "-v", "-o", mem_usg_file, "ipython", "log_times.py", f"{config_filename}"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    else:
+      res = subprocess.run(["ipython", "log_times.py", f"{config_filename}"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     return res.returncode == 0, res
   
   # END run_config() #
@@ -52,7 +55,7 @@ def run_nb_file(nb_path, modin_cores: int, less_replication: bool, measure_modin
   times_file = pwd + '/' + 'times.json'
   mem_usg_file = pwd + '/' + 'mem.txt'
   succ, res = run_config(source_cells, err_file, times_file,
-                         mem_usg_file, modin_cores, less_replication, measure_modin_mem)
+                         mem_usg_file, modin_cores, less_replication, measure_mem)
   the_stdout = res.stdout.decode()
   # We may have an exception which is not denoted as error unfortunately. We have to search the stdout.
   if "Traceback" in the_stdout:
@@ -66,7 +69,7 @@ def run_nb_file(nb_path, modin_cores: int, less_replication: bool, measure_modin
   os.remove(times_file)
   os.remove('run_config.json')
 
-  if modin_cores == -1:
+  if measure_mem and modin_cores == -1:
     # Parse the results of time -v
 
     f = open(mem_usg_file, 'r')
@@ -89,8 +92,8 @@ def run_nb_file(nb_path, modin_cores: int, less_replication: bool, measure_modin
 
   return True
 
-def run_nb_paper(nb_dir, modin_cores: int, less_replication: bool, measure_modin_mem: bool):
+def run_nb_paper(nb_dir, modin_cores: int, less_replication: bool, measure_mem: bool):
   nb_file = "bench.ipynb"
   nb_path = "/".join((nb_dir, "src", nb_file))
 
-  return run_nb_file(nb_path, modin_cores, less_replication, measure_modin_mem)
+  return run_nb_file(nb_path, modin_cores, less_replication, measure_mem)

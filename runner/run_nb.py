@@ -18,7 +18,7 @@ def run_nb_file(nb_path, modin_cores: int, less_replication: bool, measure_mem: 
   src_dir = os.path.dirname(nb_path)
 
   def run_config(source_cells, error_file, times_file, 
-                mem_usg_file, modin_cores, less_replication, measure_modin_mem):
+                mem_usg_file, modin_cores, less_replication, measure_mem):
     config = dict()
     config['src_dir'] = src_dir
     config['cells'] = source_cells

@@ -62,7 +62,15 @@ nbs_we_dont = [
   "roopacalistus/exploratory-data-analysis-retail-supermarket"
 ]
 
-nbs = nbs_we_hit + nbs_we_dont
+nbs_new = [
+  "brianmendieta/data-cleaning-plus-eda",
+  "deffro/eda-is-fun/notebook",
+  "artgor/eda-and-models",
+  "kanncaa1/dataiteam-titanic-eda",
+  "shivavashishtha/zomato-eda-tutorial"
+]
+
+nbs = nbs_we_hit + nbs_we_dont + nbs_new
 
 for nb in nbs:
   kernel_user = nb.split('/')[0]

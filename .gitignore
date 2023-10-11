@@ -1,0 +1,5 @@
+# TODO: We want to ignore everything except the .ipynb in the src. But
+# I couldn't make that work so I made an exhaustive list.
+notebooks/*/*/input
+notebooks/*/*/src/*.csv
+notebooks/*/*/src/working

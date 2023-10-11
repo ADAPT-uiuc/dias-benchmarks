@@ -62,7 +62,20 @@ nbs_we_dont = [
   "roopacalistus/exploratory-data-analysis-retail-supermarket"
 ]
 
-nbs = nbs_we_hit + nbs_we_dont
+nbs_new = [
+  "brianmendieta/data-cleaning-plus-eda",
+  "deffro/eda-is-fun",
+  "artgor/eda-and-models",
+  "kanncaa1/dataiteam-titanic-eda",
+  "shivavashishtha/zomato-eda-tutorial",
+  "khoongweihao/covid-19-novel-coronavirus-eda-forecasting-cases",
+  "carlmcbrideellis/simple-eda-of-kaggle-grandmasters-scheduled",
+  "willkoehrsen/start-here-a-gentle-introduction",
+  "vanguarde/h-m-eda-first-look",
+  "yuliagm/talkingdata-eda-plus-time-patterns"
+]
+
+nbs = nbs_we_hit + nbs_we_dont + nbs_new
 
 for nb in nbs:
   kernel_user = nb.split('/')[0]

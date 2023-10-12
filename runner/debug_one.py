@@ -1,10 +1,16 @@
 import run_nb
+import argparse
 
-modin_cores = -1
-less_replication = False
-measure_mem = False
+provided_args = {
+    'alt': None,
+    'cores': 12,
+    'less_replication': True,
+    'measure_mem': False
+}
+
+# Parse the dictionary of argument values
+args = argparse.Namespace(**provided_args)
 
 succ = run_nb.run_nb_paper(
-  "../notebooks/lextoumbourou/feedback3-eda-hf-custom-trainer-sift",
-    modin_cores, less_replication, measure_mem)
+  "../notebooks/joshuaswords/netflix-data-visualization/", args)
 assert succ

@@ -107,13 +107,6 @@ except:
   sys.exit(1)
 _IREWR_f.close()
 
-# Set enviromental variables used in the notebooks
-if _IREWR_run_config['modin_cores'] != -1:
-  os.environ["IREWR_WITH_MODIN"] = "True"
-  # See: https://modin.readthedocs.io/en/stable/getting_started/using_modin/using_modin_locally.html#advanced-configuring-the-resources-modin-uses
-  # But also: https://github.com/modin-project/modin/issues/1666
-  # It seems to me this applies only in a distributed setting, so we should be ok.
-  os.environ["MODIN_CPUS"] = str(_IREWR_run_config['modin_cores'])
 if _IREWR_run_config['less_replication']:
   os.environ["IREWR_LESS_REPLICATION"] = "True"
 
@@ -122,8 +115,6 @@ import bench_utils
 _IREWR_error_file = _IREWR_run_config['error_file']
 _IREWR_times_file = _IREWR_run_config['output_times_json']
 _IREWR_measure_modin_mem = _IREWR_run_config['measure_modin_mem']
-if _IREWR_measure_modin_mem: # We should enable this option only if we're running with Modin
-  assert _IREWR_run_config['modin_cores'] != -1
 
 def _IREWR_err_txt(ctx):
   return \

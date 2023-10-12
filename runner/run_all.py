@@ -46,7 +46,7 @@ ver_file.close()
 
 prefix = str(pathlib.Path('../notebooks').resolve())
 
-nbs_we_hit = [
+nbs = [
   "lextoumbourou/feedback3-eda-hf-custom-trainer-sift",
   "paultimothymooney/kaggle-survey-2022-all-results",
   "dataranch/supermarket-sales-prediction-xgboost-fastai",
@@ -56,10 +56,7 @@ nbs_we_hit = [
   "saisandeepjallepalli/adidas-retail-eda-data-visualization",
   "joshuaswords/netflix-data-visualization",
   "spscientist/student-performance-in-exams",
- "ibtesama/getting-started-with-a-movie-recommendation-system",
-]
-
-nbs_we_dont = [
+  "ibtesama/getting-started-with-a-movie-recommendation-system",
   "nickwan/creating-player-stats-using-tracking-data",
   "erikbruin/nlp-on-student-writing-eda",
   "madhurpant/beautiful-kaggle-2022-analysis",
@@ -69,12 +66,18 @@ nbs_we_dont = [
   "sanket7994/imdb-dataset-eda-project",
   "roopacalistus/retail-supermarket-store-analysis",
   "sandhyakrishnan02/indian-startup-growth-analysis",
-  "roopacalistus/exploratory-data-analysis-retail-supermarket"
+  "roopacalistus/exploratory-data-analysis-retail-supermarket",
+  "brianmendieta/data-cleaning-plus-eda",
+  "deffro/eda-is-fun",
+  "artgor/eda-and-models",
+  "kanncaa1/dataiteam-titanic-eda",
+  "shivavashishtha/zomato-eda-tutorial",
+  "khoongweihao/covid-19-novel-coronavirus-eda-forecasting-cases",
+  "carlmcbrideellis/simple-eda-of-kaggle-grandmasters-scheduled",
+  "willkoehrsen/start-here-a-gentle-introduction",
+  "vanguarde/h-m-eda-first-look",
+  "yuliagm/talkingdata-eda-plus-time-patterns"
 ]
-
-# TODO: Merge these into one list. There's no rewriter no so the concept
-# of hitting doesn't apply.
-nbs = nbs_we_hit + nbs_we_dont
 
 for nb in nbs:
   kernel_user = nb.split('/')[0]

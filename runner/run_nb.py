@@ -89,7 +89,7 @@ def run_nb_file(nb_path, args):
     config['output_times_json'] = times_file
     config['cores'] = args.cores
     config['less_replication'] = args.less_replication
-    config['measure_modin_mem'] = args.alt == "modin"
+    config['measure_modin_mem'] = args.measure_mem and args.alt == "modin"
 
     config_filename = 'run_config.json'
     f = open(config_filename, 'w')

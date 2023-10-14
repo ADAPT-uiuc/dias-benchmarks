@@ -76,7 +76,17 @@ nbs = [
   "carlmcbrideellis/simple-eda-of-kaggle-grandmasters-scheduled",
   "willkoehrsen/start-here-a-gentle-introduction",
   "vanguarde/h-m-eda-first-look",
-  "yuliagm/talkingdata-eda-plus-time-patterns"
+  "yuliagm/talkingdata-eda-plus-time-patterns",
+  "arimishabirin/globalsalary-simple-eda",
+  "beratozmen/clash-of-clans-exploratory-data-analysis",
+  "itzsanju/eda-airline-dataset",
+  "jyotsananegi/melbourne-housing-snapshot-eda",
+  "madseth/customer-shopping-trends-dataset-eda",
+  "mikedelong/python-eda-with-kdes",
+  "nicoleashley/iit-admission-eda",
+  "roopahegde/cryptocurrency-price-correlation",
+  "saniaks/melbourne-house-price-eda",
+  "sunnybiswas/eda-on-airline-dataset"
 ]
 
 for nb in nbs:

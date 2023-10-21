@@ -86,7 +86,12 @@ nbs = [
   "nicoleashley/iit-admission-eda",
   "roopahegde/cryptocurrency-price-correlation",
   "saniaks/melbourne-house-price-eda",
-  "sunnybiswas/eda-on-airline-dataset"
+  "sunnybiswas/eda-on-airline-dataset",
+  "akshaypetkar/supermarket-sales-analysis",
+  "qnqfbqfqo/electric-vehicle-landscape-in-washington-state",
+  "xokent/cyber-security-attack-eda",
+  "josecode1/billionaires-statistics-2023",
+  "mathewvondersaar/analysis-of-student-performance"
 ]
 
 for nb in nbs:

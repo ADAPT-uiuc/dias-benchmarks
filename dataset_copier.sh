@@ -45,6 +45,11 @@ nbs=(
   "roopahegde/cryptocurrency-price-correlation"
   "saniaks/melbourne-house-price-eda"
   "sunnybiswas/eda-on-airline-dataset"
+  "akshaypetkar/supermarket-sales-analysis"
+  "qnqfbqfqo/electric-vehicle-landscape-in-washington-state"
+  "xokent/cyber-security-attack-eda"
+  "josecode1/billionaires-statistics-2023"
+  "mathewvondersaar/analysis-of-student-performance"
 )
 
 # Assumption: All datasets are moved to the Datasets_Extracted director in the project root folder

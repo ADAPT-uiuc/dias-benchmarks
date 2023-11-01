@@ -7,7 +7,7 @@ import sys
 import pathlib
 
 parser = argparse.ArgumentParser(description='Run all benchmarks')
-parser.add_argument('--alt', choices=['modin', 'koalas'], help='Pandas alternative. If left unspecified, it uses regular pandas. Otherwise, it can either modin or koalas')
+parser.add_argument('--alt', choices=['modin', 'koalas', 'analytical'], help='Pandas alternative. If left unspecified, it uses regular pandas. Otherwise, it can either modin, or koalas, or the analytical model which is a hybrid of pandas and modin.')
 parser.add_argument('--cores', type=int, metavar='NUM_CORES', help='Number of cores to use with modin or koalas. Valid (and required) only if --alt has been specified.')
 parser.add_argument('--less_replication', action='store_true', help='Less replication of data.')
 parser.add_argument('--measure_mem', action='store_true', help='Measure memory consumption (only works for pandas and modin, not koalas).')

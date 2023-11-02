@@ -10,15 +10,18 @@ import glob
 import bench_utils
 
 def import_pandas_alt(source_cells, num_cpus, alt):
-  modin_import = \
+  def modin_import(name_for_modin_pandas):
+    return \
 f"""
 import os
 os.environ["MODIN_ENGINE"] = "ray"
 import ray
 os.environ['MODIN_CPUS'] = "{num_cpus}"
 ray.init(num_cpus={num_cpus}, runtime_env={{'env_vars': {{'__MODIN_AUTOIMPORT_PANDAS__': '1'}}}})
-import modin.pandas as pd
+import modin.pandas as {name_for_modin_pandas}
 """
+
+  std_modin_import = modin_import("pd")
 
   # TODO: Specify number of cores. We should be able to do sth like:
   # from pyspark import SparkConf, SparkContext
@@ -43,11 +46,45 @@ pd.set_option('compute.default_index_type', 'distributed')
 pd.options.compute.ops_on_diff_frames = True
 """
 
+  analytical_import = \
+f"""
+import pandas as pd
+import functools
+{modin_import("modin_pd")}
+
+os.environ["USE_MODIN"]="True"
+
+from typing import Dict, List, Optional, Tuple, Any, Literal, Callable
+from pandas._typing import AggFuncType, Axis
+
+_CS598_save_DataFrame_apply = pd.DataFrame.apply
+_CS598_save_Series_apply = pd.Series.apply
+
+def _CS598_Series_apply(self, func: AggFuncType, convert_dtype: bool = True,
+                        args: tuple[Any, ...] = (), **kwargs):
+  default_call = functools.partial(_CS598_save_Series_apply, self, func, convert_dtype, args, **kwargs)
+  assert isinstance(self, pd.Series)
+  
+  if os.environ["USE_MODIN"] == "True":
+    modin_ser = modin_pd.Series(self)
+    modin_call = functools.partial(modin_pd.Series.apply, modin_ser, func, convert_dtype, args, **kwargs)
+    modin_res = modin_call()
+    return modin_res._to_pandas()
+  return default_call()
+
+assert pd.Series.apply != _CS598_Series_apply
+# Overwriting is not trivial. Thanks to:
+# https://github.com/lux-org/lux/blob/550a2eca90b26c944ebe8600df7a51907bc851be/lux/core/__init__.py#L27
+pd.Series.apply = pd.core.frame.Series.apply = _CS598_Series_apply
+"""
+
   import_stmt = None
   if alt == "modin":
-    import_stmt = modin_import
+    import_stmt = std_modin_import
   elif alt == "koalas":
     import_stmt = koalas_import
+  elif alt == "analytical":
+    import_stmt = analytical_import
   else:
     assert 0
 

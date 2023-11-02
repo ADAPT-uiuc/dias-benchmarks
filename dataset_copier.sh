@@ -49,7 +49,12 @@ nbs=(
   "qnqfbqfqo/electric-vehicle-landscape-in-washington-state"
   "xokent/cyber-security-attack-eda"
   "josecode1/billionaires-statistics-2023"
-  "mathewvondersaar/analysis-of-student-performance"
+  "mathewvondersaar/analysis-of-student-performance",
+  "viviktpharale/house-price-prediction-eda-linear-ridge-lasso",
+  "jagangupta/stop-the-s-toxic-comments-eda",
+  "kimtaehun/simple-preprocessing-for-time-series-prediction",
+  "vatsalmavani/music-recommendation-system-using-spotify-dataset",
+  "tanulsingh077/twitter-sentiment-extaction-analysis-eda-and-model"
 )
 
 # Assumption: All datasets are moved to the Datasets_Extracted director in the project root folder

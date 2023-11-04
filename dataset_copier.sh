@@ -54,7 +54,15 @@ nbs=(
   "jagangupta/stop-the-s-toxic-comments-eda",
   "kimtaehun/simple-preprocessing-for-time-series-prediction",
   "vatsalmavani/music-recommendation-system-using-spotify-dataset",
-  "tanulsingh077/twitter-sentiment-extaction-analysis-eda-and-model"
+  "tanulsingh077/twitter-sentiment-extaction-analysis-eda-and-model",
+  "corazzon/how-to-use-pandas-filter-in-survey-eda",
+  "robikscube/big-data-bowl-comprehensive-eda-with-pandas",
+  "vbmokin/automatic-eda-with-pandas-profiling-2-9-09-2020",
+  "korfanakis/housing-in-london-eda-with-pandas-and-gif",
+  "natigmamishov/eda-with-pandas-on-telecom-churn-dataset",
+  "olgaberezovsky/eda-using-python-pandas",
+  "macespinoza/simple-eda-with-python-pandas-data-avocado-paltas",
+  "kenjee/titanic-project-example"
 )
 
 # Assumption: All datasets are moved to the Datasets_Extracted director in the project root folder

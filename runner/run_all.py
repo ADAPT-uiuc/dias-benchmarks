@@ -102,7 +102,6 @@ nbs = [
   "vbmokin/automatic-eda-with-pandas-profiling-2-9-09-2020",
   "korfanakis/housing-in-london-eda-with-pandas-and-gif",
   "natigmamishov/eda-with-pandas-on-telecom-churn-dataset",
-  "olgaberezovsky/eda-using-python-pandas",
   "macespinoza/simple-eda-with-python-pandas-data-avocado-paltas",
   "kenjee/titanic-project-example"
 ]

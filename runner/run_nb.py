@@ -67,15 +67,41 @@ def _CS598_Series_apply(self, func: AggFuncType, convert_dtype: bool = True,
   
   if os.environ["USE_MODIN"] == "True":
     modin_ser = modin_pd.Series(self)
-    modin_call = functools.partial(modin_pd.Series.apply, modin_ser, func, convert_dtype, args, **kwargs)
-    modin_res = modin_call()
+    # TODO: We need a generic way to deal with this.
+    # Problem: pd.numeric is passed which doesn't work on a modin dataframe.
+    if func == pd.to_numeric:
+      assert false
+      func = modin_pd.to_numeric
+    modin_res = modin_ser.apply(func, convert_dtype, args, **kwargs)
     return modin_res._to_pandas()
   return default_call()
 
+def _CS598_DataFrame_apply(
+    self,
+    func: AggFuncType,
+    axis: Axis = 0,
+    raw: bool = False,
+    result_type: Literal["expand", "reduce", "broadcast"] | None = None,
+    args=(),
+    **kwargs,
+):
+  default_call = functools.partial(_CS598_save_DataFrame_apply, self, func, axis, raw, result_type, args, **kwargs)
+  assert isinstance(self, pd.DataFrame)
+  
+  if os.environ["USE_MODIN"] == "True":
+    modin_df = modin_pd.DataFrame(self)
+    modin_res = modin_df.apply(func, axis, raw, result_type, args, **kwargs)
+    return modin_res._to_pandas()
+  return default_call()
+
+
+
 assert pd.Series.apply != _CS598_Series_apply
+assert pd.DataFrame.apply != _CS598_DataFrame_apply
 # Overwriting is not trivial. Thanks to:
 # https://github.com/lux-org/lux/blob/550a2eca90b26c944ebe8600df7a51907bc851be/lux/core/__init__.py#L27
-pd.Series.apply = pd.core.frame.Series.apply = _CS598_Series_apply
+pd.Series.apply = pd.core.frame.Series.apply = pd.core.series.Series.apply = _CS598_Series_apply
+pd.DataFrame.apply = pd.core.frame.DataFrame.apply = _CS598_DataFrame_apply
 """
 
   import_stmt = None

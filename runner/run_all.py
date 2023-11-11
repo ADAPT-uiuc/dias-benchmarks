@@ -11,6 +11,7 @@ parser.add_argument('--alt', choices=['modin', 'koalas', 'analytical'], help='Pa
 parser.add_argument('--cores', type=int, metavar='NUM_CORES', help='Number of cores to use with modin or koalas. Valid (and required) only if --alt has been specified.')
 parser.add_argument('--less_replication', action='store_true', help='Less replication of data.')
 parser.add_argument('--measure_mem', action='store_true', help='Measure memory consumption (only works for pandas and modin, not koalas).')
+parser.add_argument('--dataset_size', type=int, metavar='DATA_MB', help='Replicate or truncate datasets to a total of the specified size (in MB).')
 
 args = parser.parse_args()
 
@@ -40,7 +41,8 @@ ver_file = open('stats/.version', 'w+')
 VER_pandas = "pandas" if args.alt is None else args.alt
 VER_repl = "repl_LESS" if args.less_replication else "repl_STD"
 VER_sliced_exec = "mem_ON" if args.measure_mem else "mem_OFF"
-VER="-".join((VER_pandas, VER_repl, VER_sliced_exec))
+VER_dataset_size = str(args.dataset_size) + " MB" if args.dataset_size else "original_size"
+VER="-".join((VER_pandas, VER_repl, VER_sliced_exec, VER_dataset_size))
 ver_file.write(VER)
 ver_file.close()
 

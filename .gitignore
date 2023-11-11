@@ -3,3 +3,6 @@
 notebooks/*/*/input
 notebooks/*/*/src/*.csv
 notebooks/*/*/src/working
+# Ignoring the plotting file changes as it perhaps varies how each of us uses it
+#
+plotting/*.ipynb

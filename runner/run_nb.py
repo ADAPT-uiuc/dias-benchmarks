@@ -190,11 +190,40 @@ pd.to_datetime = _CS598_to_datetime
   # END FOR #
   return new_cells
 
+def modify_dataset_size(source_cells, dataset_size):
+  search_size_stmt = "intended_df_size_in_MB = 256\n"
+  updated_size_stmt = ""
+  if dataset_size is not None:
+    updated_size_stmt = "intended_df_size_in_MB = " + str(dataset_size) + "\n"
+  
+  new_cells = []
+  for cell in source_cells:
+    if search_size_stmt in cell:
+      cell_split = cell.splitlines(keepends=True)
+      if dataset_size is None:
+        # do not do anything related to dataset size
+        # last line just prints info
+        new_cell = ''.join(cell_split[-1])
+      else:
+        size_stmt_idx = cell_split.index(search_size_stmt)
+        # replace the statement denoting dataset size only
+        cell_split[size_stmt_idx] = updated_size_stmt
+        new_cell = ''.join(cell_split)
+      #print(new_cell)
+    else:
+      new_cell = cell
+    # END IF #
+    new_cells.append(new_cell)
+  # END FOR #
+  return new_cells
+
 def run_nb_file(nb_path, args):
   source_cells = bench_utils.open_and_get_source_cells(nb_path)
 
   if args.alt is not None:
     source_cells = import_pandas_alt(source_cells, args.cores, args.alt)
+
+  source_cells = modify_dataset_size(source_cells, args.dataset_size)
 
   # Don't do the following. You'll mess the cell index (i.e., we won't know that it is the nth cell)
   # source_cells = [s for s in source_cells if s.strip() != ""]

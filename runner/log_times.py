@@ -90,6 +90,8 @@ import os
 import subprocess
 import re
 
+import pandas as pd
+
 _IREWR_ipython = get_ipython()
 if _IREWR_ipython is None:
   print("[ERROR]: Run with `ipython` not `python`")
@@ -149,7 +151,17 @@ for _IREWR_cell_idx, _IREWR_cell in enumerate(_IREWR_source_cells):
   _IREWR_diff_in_ns = _IREWR_end - _IREWR_start
   _IREWR_cell_stats = dict()
   _IREWR_cell_stats['raw'] = _IREWR_cell
+  str_data = {}
+  for k in list(_IREWR_ipython.user_ns.keys()):
+    # str_data = str(k)
+    if (type(_IREWR_ipython.user_ns[k]) == pd.DataFrame) or (type(_IREWR_ipython.user_ns[k]) == pd.Series):
+      # str_data += (k + ":" + str(sys.getsizeof(_IREWR_ipython.user_ns[k])) + "|")
+      str_data[k] = str(_IREWR_ipython.user_ns[k].memory_usage(index=True, deep=True).sum())
+      # str_data += (k + ":" + str(_IREWR_ipython.user_ns[k].memory_usage(index=True, deep=True).sum()) + "|")
+
+  _IREWR_cell_stats['vars'] = str_data
   _IREWR_cell_stats['total-ns'] = _IREWR_diff_in_ns
+
   
   if not _IREWR_ip_run_res.success:
     _IREWR_ctx = (_IREWR_cell_idx, _IREWR_cell)

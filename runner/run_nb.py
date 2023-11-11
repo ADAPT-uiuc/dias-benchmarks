@@ -55,10 +55,12 @@ import functools
 os.environ["USE_MODIN"]="True"
 
 from typing import Dict, List, Optional, Tuple, Any, Literal, Callable
-from pandas._typing import AggFuncType, Axis
+from pandas._typing import AggFuncType, Axis, IndexLabel, Suffixes
 
 _CS598_save_DataFrame_apply = pd.DataFrame.apply
+_CS598_save_DataFrame_merge = pd.DataFrame.merge
 _CS598_save_Series_apply = pd.Series.apply
+_CS598_save_to_datetime = pd.to_datetime
 
 def _CS598_Series_apply(self, func: AggFuncType, convert_dtype: bool = True,
                         args: tuple[Any, ...] = (), **kwargs):
@@ -67,15 +69,97 @@ def _CS598_Series_apply(self, func: AggFuncType, convert_dtype: bool = True,
   
   if os.environ["USE_MODIN"] == "True":
     modin_ser = modin_pd.Series(self)
-    modin_call = functools.partial(modin_pd.Series.apply, modin_ser, func, convert_dtype, args, **kwargs)
-    modin_res = modin_call()
+    # TODO: We need a generic way to deal with this.
+    # Problem: pd.numeric is passed which doesn't work on a modin dataframe.
+    if func == pd.to_numeric:
+      assert false
+      func = modin_pd.to_numeric
+    modin_res = modin_ser.apply(func, convert_dtype, args, **kwargs)
+    return modin_res._to_pandas()
+  return default_call()
+
+def _CS598_DataFrame_apply(
+    self,
+    func: AggFuncType,
+    axis: Axis = 0,
+    raw: bool = False,
+    result_type: Literal["expand", "reduce", "broadcast"] | None = None,
+    args=(),
+    **kwargs,
+):
+  default_call = functools.partial(_CS598_save_DataFrame_apply, self, func, axis, raw, result_type, args, **kwargs)
+  assert isinstance(self, pd.DataFrame)
+  
+  if os.environ["USE_MODIN"] == "True":
+    modin_df = modin_pd.DataFrame(self)
+    modin_res = modin_df.apply(func, axis, raw, result_type, args, **kwargs)
+    return modin_res._to_pandas()
+  return default_call()
+
+def _CS598_DataFrame_merge(
+    self,
+    right: pd.DataFrame | pd.Series,
+    how: str = "inner",
+    on: IndexLabel | None = None,
+    left_on: IndexLabel | None = None,
+    right_on: IndexLabel | None = None,
+    left_index: bool = False,
+    right_index: bool = False,
+    sort: bool = False,
+    suffixes: Suffixes = ("_x", "_y"),
+    copy: bool = True,
+    indicator: bool = False,
+    validate: str | None = None,
+) -> pd.DataFrame:
+  assert isinstance(self, pd.DataFrame)        
+  default_call = functools.partial(_CS598_save_DataFrame_merge, self, right, how, on, 
+      left_on, right_on, left_index, right_index, sort, suffixes, copy, indicator, validate)
+  
+  if os.environ["USE_MODIN"] == "True":
+    modin_df = modin_pd.DataFrame(self)
+    modin_res = modin_df.merge(right, how, on, 
+      left_on, right_on, left_index, right_index, sort, suffixes, copy, indicator, validate)
+    return modin_res._to_pandas()
+  return default_call()
+
+
+def _CS598_to_datetime(
+    arg,
+    errors = "raise",
+    dayfirst: bool = False,
+    yearfirst: bool = False,
+    utc: bool | None = None,
+    format: str | None = None,
+    exact: bool = True,
+    unit: str | None = None,
+    infer_datetime_format: bool = False,
+    origin="unix",
+    cache: bool = True,
+):
+  default_call = functools.partial(_CS598_save_to_datetime, arg, errors, dayfirst,
+      yearfirst, utc, format, exact, unit,infer_datetime_format, origin, cache)
+  
+  if os.environ["USE_MODIN"] == "True":
+    if type(arg) == pd.DataFrame:
+      arg = modin_pd.DataFrame(arg)
+    elif type(arg) == pd.Series:
+      arg = modin_pd.Series(arg)
+
+    modin_res = modin_pd.to_datetime(arg, errors, dayfirst,
+      yearfirst, utc, format, exact, unit,infer_datetime_format, origin, cache)
     return modin_res._to_pandas()
   return default_call()
 
 assert pd.Series.apply != _CS598_Series_apply
+assert pd.DataFrame.apply != _CS598_DataFrame_apply
+assert pd.DataFrame.merge != _CS598_DataFrame_merge
+assert pd.to_datetime != _CS598_to_datetime
 # Overwriting is not trivial. Thanks to:
 # https://github.com/lux-org/lux/blob/550a2eca90b26c944ebe8600df7a51907bc851be/lux/core/__init__.py#L27
-pd.Series.apply = pd.core.frame.Series.apply = _CS598_Series_apply
+pd.Series.apply = pd.core.frame.Series.apply = pd.core.series.Series.apply = _CS598_Series_apply
+pd.DataFrame.apply = pd.core.frame.DataFrame.apply = _CS598_DataFrame_apply
+pd.DataFrame.merge = pd.core.frame.DataFrame.merge = _CS598_save_DataFrame_merge
+pd.to_datetime = _CS598_to_datetime
 """
 
   import_stmt = None

@@ -61,7 +61,7 @@ nbs_we_dont = [
   "sanket7994/imdb-dataset-eda-project",
   "roopacalistus/retail-supermarket-store-analysis",
   "sandhyakrishnan02/indian-startup-growth-analysis",
-  "roopacalistus/exploratory-data-analysis-retail-supermarket"
+  "josecode1/billionaires-statistics-2023"
 ]
 
 nbs = nbs_we_hit + nbs_we_dont

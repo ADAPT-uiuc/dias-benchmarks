@@ -147,6 +147,9 @@ f"""
 
 _IREWR_ipython.run_line_magic('cd', _IREWR_run_config['src_dir'])
 
+# It may get overshadowed by the notebook
+_IREWR_builtin_max = max
+
 _IREWR_source_cells = _IREWR_run_config['cells']
 
 def report_on_fail(_IREWR_ctx):
@@ -213,11 +216,13 @@ for _IREWR_cell_idx, _IREWR_cell in enumerate(_IREWR_source_cells):
     match_mem = re.search("Objects consumed by Ray tasks: (\d+) MiB", ray_sample_out)
     # Some files will contain nothing.
     if match_mem:
-      _IREWR_max_modin_mem = max(_IREWR_max_modin_mem, int(match_mem.group(1)))
+      x = match_mem.group(1)
+      xx = int(x)      
+      _IREWR_max_modin_mem = _IREWR_builtin_max(_IREWR_max_modin_mem, xx)
     
     match_disk = re.search("Spilled (\d+) MiB", ray_sample_out)
     if match_disk:
-      _IREWR_max_modin_disk = max(_IREWR_max_modin_disk, match_disk.group(1))
+      _IREWR_max_modin_disk = _IREWR_builtin_max(_IREWR_max_modin_disk, int(match_disk.group(1)))
   # END if _IREWR_measure_modin_mem #
 
   _IREWR_cells.append(_IREWR_cell_stats)

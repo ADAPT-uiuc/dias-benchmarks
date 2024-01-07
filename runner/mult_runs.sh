@@ -5,7 +5,7 @@ echo "######### CONFIG: ${@} ############"
 for i in {0..9}
 do
   echo "------- ITERATION ${i} -----------"
-  python run_all.py $@ || { echo 'python run_all.py FAILED. Exiting.'; exit 1; }
+  python -u run_all.py $@ || { echo 'python run_all.py FAILED. Exiting.'; exit 1; }
   mv stats s-${i}
   mkdir stats
 done

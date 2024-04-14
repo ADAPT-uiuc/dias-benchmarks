@@ -1,0 +1,8 @@
+.venv/
+dias-datasets
+dias_datasets.zip
+
+notebooks/**/input/
+
+profile.html
+profile.json

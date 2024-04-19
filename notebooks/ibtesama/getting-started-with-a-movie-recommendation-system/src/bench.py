@@ -19,8 +19,8 @@ else:
 import numpy as np 
 
 def main():
-    df1=pd.read_csv('../input/tmdb-movie-metadata/tmdb_5000_credits.csv')
-    df2=pd.read_csv('../input/tmdb-movie-metadata/tmdb_5000_movies.csv')
+    df1=pd.read_csv('input/tmdb-movie-metadata/tmdb_5000_credits.csv')
+    df2=pd.read_csv('input/tmdb-movie-metadata/tmdb_5000_movies.csv')
 
 
     # # -- STEFANOS -- Replicate Data
@@ -33,7 +33,7 @@ def main():
     if "IREWR_LESS_REPLICATION" in os.environ and os.environ["IREWR_LESS_REPLICATION"] == "True":
         factor = factor//3
     df1 = pd.concat([df1]*factor, ignore_index=True)
-    df1.info()
+    # df1.info()
 
 
     # In[3]:

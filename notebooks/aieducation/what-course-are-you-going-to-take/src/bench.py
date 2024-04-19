@@ -60,7 +60,7 @@ def main():
     # In[47]:
 
 
-    course = pd.read_csv("../input/course-reviews-university-of-waterloo/course_data_clean.csv")
+    course = pd.read_csv("/Users/sam/dias-benchmarks/notebooks/aieducation/what-course-are-you-going-to-take/input/course-reviews-university-of-waterloo/course_data_clean.csv")
 
 
     # # -- STEFANOS -- Replicate Data
@@ -94,7 +94,7 @@ def main():
     # In[52]:
 
 
-    course.describe()
+    # course.describe()
 
 
     # In[53]:

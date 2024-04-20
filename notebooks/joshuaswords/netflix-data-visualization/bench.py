@@ -60,7 +60,7 @@ import pandas as pd
 # For example, running this (by clicking run or pressing Shift+Enter) will list all files under the input directory
 
 import os
-for dirname, _, filenames in os.walk('input'):
+for dirname, _, filenames in os.walk(os.path.abspath('') +'/input'):
     for filename in filenames:
         print(os.path.join(dirname, filename))
 
@@ -95,7 +95,7 @@ import datetime as dt
 # In[3]:
 
 
-df = pd.read_csv('input/netflix-shows/netflix_titles.csv')
+df = pd.read_csv(os.path.abspath('') +'/input/netflix-shows/netflix_titles.csv')
 
 df.head(3)
 

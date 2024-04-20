@@ -16,8 +16,8 @@ import pandas as pd
 # In[2]:
 
 
-train_df = pd.read_csv('input/feedback-prize-english-language-learning/train.csv')
-test_df = pd.read_csv('input/feedback-prize-english-language-learning/test.csv')
+train_df = pd.read_csv(os.path.abspath('') + '/input/feedback-prize-english-language-learning/train.csv')
+test_df = pd.read_csv(os.path.abspath('') + '/input/feedback-prize-english-language-learning/test.csv')
 
 
 # # -- STEFANOS -- Replicate Data

@@ -1,0 +1,8 @@
+./joshuaswords/netflix-data-visualization-- bench.py: Format error, look into this
+./paultimothymooney/kaggle-survey-2022-all-results -- bench.py: Requires /kaggle, not sure what to do here but the REPRODUCE has some pointers
+./saisandeepjallepalli/adidas-retail-eda-data-visualization -- bench.py: Index error, not sure how to deal with
+./nickwan/creating-player-stats-using-tracking-data -- bench.py: rerun?
+./pmarcelino/comprehensive-data-exploration-with-python -- bench.py: Index error
+./mpwolke/just-you-wait-rishi-sunak -- bench.py: Omitted, takes more than 6 minutes to run
+./roopacalistus/retail-supermarket-store-analysis -- bench.py: Index error
+./gksriharsha/eda-speedtests -- bench.py: Dias previously imported, rerun

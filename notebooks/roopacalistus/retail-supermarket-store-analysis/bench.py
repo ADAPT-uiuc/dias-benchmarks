@@ -23,7 +23,7 @@ import pandas as pd
 # In[2]:
 
 
-data=pd.read_csv("input/superstore/SampleSuperstore.csv")
+data=pd.read_csv(os.path.abspath('') + "/input/superstore/SampleSuperstore.csv")
 
 
 # # -- STEFANOS -- Replicate Data

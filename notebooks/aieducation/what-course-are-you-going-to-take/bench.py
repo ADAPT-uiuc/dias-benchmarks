@@ -50,7 +50,7 @@ import numpy as np
 # In[107]:
 
 
-course = pd.read_csv("input/course-reviews-university-of-waterloo/course_data_clean.csv")
+course = pd.read_csv(os.path.abspath('') + "/input/course-reviews-university-of-waterloo/course_data_clean.csv")
 
 
 # # -- STEFANOS -- Replicate Data

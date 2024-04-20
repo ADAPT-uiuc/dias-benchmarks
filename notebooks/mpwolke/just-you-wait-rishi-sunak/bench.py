@@ -22,7 +22,7 @@ warnings.filterwarnings('ignore')
 # For example, running this (by clicking run or pressing Shift+Enter) will list all files under the input directory
 
 import os
-for dirname, _, filenames in os.walk('input'):
+for dirname, _, filenames in os.walk(os.path.abspath('') + '/input'):
     for filename in filenames:
         print(os.path.join(dirname, filename))
 
@@ -73,7 +73,6 @@ from nltk.tokenize import word_tokenize
 
 # STEFANOS: Unneeded
 # from wordcloud import WordCloud
-from tqdm.auto import tqdm
 import matplotlib.style as style
 style.use('fivethirtyeight')
 
@@ -83,7 +82,7 @@ style.use('fivethirtyeight')
 # In[3]:
 
 
-train = pd.read_parquet('input/latest-elected-uk-prime-minister-rishi-sunak/uk_pm.parquet')
+train = pd.read_parquet(os.path.abspath('') + '/input/latest-elected-uk-prime-minister-rishi-sunak/uk_pm.parquet')
 
 
 # In[4]:
@@ -97,7 +96,7 @@ train.head()
 # In[5]:
 
 
-df = pd.read_csv("input/latest-elected-uk-prime-minister-rishi-sunak/uk_pm.csv", delimiter=',', encoding='utf8')
+df = pd.read_csv(os.path.abspath('') +"/input/latest-elected-uk-prime-minister-rishi-sunak/uk_pm.csv", delimiter=',', encoding='utf8')
 pd.set_option('display.max_columns', None)
 df.tail()
 
@@ -231,7 +230,7 @@ train["text"] = [x.replace(':',' ') for x in train["text"]]
 # In[10]:
 
 
-train['clean_text'] = pd.Series([clean_text(i) for i in tqdm(train['text'])])
+train['clean_text'] = pd.Series([clean_text(i) for i in (train['text'])])
 
 
 # In[11]:

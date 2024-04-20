@@ -16,7 +16,7 @@ import pandas as pd
 
 
 # load & cleanup
-file = 'input/indian-startup-recognized-by-dpiit/Startup_Counts_Across_India.csv'
+file = os.path.abspath('') + '/input/indian-startup-recognized-by-dpiit/Startup_Counts_Across_India.csv'
 df = pd.read_csv(file)
 
 

@@ -19,10 +19,10 @@ import pandas as pd
 # In[2]:
 
 
-data = pd.read_csv('input/nfl-big-data-bowl-2023/week1.csv')
-scout = pd.read_csv('input/nfl-big-data-bowl-2023/pffScoutingData.csv')
-plays = pd.read_csv('input/nfl-big-data-bowl-2023/plays.csv')
-players = pd.read_csv('input/nfl-big-data-bowl-2023/players.csv')
+data = pd.read_csv(os.path.abspath('') + '/input/nfl-big-data-bowl-2023/week1.csv')
+scout = pd.read_csv(os.path.abspath('') + '/input/nfl-big-data-bowl-2023/pffScoutingData.csv')
+plays = pd.read_csv(os.path.abspath('') + '/input/nfl-big-data-bowl-2023/plays.csv')
+players = pd.read_csv(os.path.abspath('') + '/input/nfl-big-data-bowl-2023/players.csv')
 
 # Let's merge these data into one set 
 data = data.merge(scout, how='left')
@@ -150,7 +150,7 @@ snap_speed.head()
 # e.g. if o-lineman has more a negative LOS diff, they allow more pass rush penetration 
 _off = _df.loc[_df['posTeam']==1, ['gameId', 'playId', 'nflId', 'los_diff']].groupby(['gameId', 'playId', 'nflId'], as_index=False).max()
 _def = _df.loc[_df['posTeam']==0, ['gameId', 'playId', 'nflId', 'los_diff']].groupby(['gameId', 'playId', 'nflId'], as_index=False).min()
-los_diff = _off.append(_def)
+los_diff = _off._append(_def)
 los_diff = (los_diff
             .loc[:, ['nflId', 'los_diff']]
             .groupby('nflId', 

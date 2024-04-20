@@ -50,7 +50,7 @@ font = 'Rubik'
 # In[2]:
 
 
-df = pd.read_csv('input/kaggle-survey-2022/kaggle_survey_2022_responses.csv')
+df = pd.read_csv(os.path.abspath('') + '/input/kaggle-survey-2022/kaggle_survey_2022_responses.csv')
 
 
 # In[3]:

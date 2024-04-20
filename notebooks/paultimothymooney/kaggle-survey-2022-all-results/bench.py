@@ -240,27 +240,27 @@ directory = '/kaggle/working/individual_charts/charts/'
 if not os.path.exists(directory):
     os.mkdir(directory)
 
-base_dir_2017 = 'input/kaggle-survey-2017/'
+base_dir_2017 = os.path.abspath('') + '/input/kaggle-survey-2017/'
 file_name_2017 = 'multipleChoiceResponses.csv'
 responses_df_2017 = load_survey_data(base_dir_2017,file_name_2017,rows_to_skip=0)
 
-base_dir_2018 = 'input/kaggle-survey-2018/'
+base_dir_2018 = os.path.abspath('') + '/input/kaggle-survey-2018/'
 file_name_2018 = 'multipleChoiceResponses.csv'
 responses_df_2018 = load_survey_data(base_dir_2018,file_name_2018)
 
-base_dir_2019 = 'input/kaggle-survey-2019/'
+base_dir_2019 = os.path.abspath('') + '/input/kaggle-survey-2019/'
 file_name_2019 = 'multiple_choice_responses.csv'
 responses_df_2019 = load_survey_data(base_dir_2019,file_name_2019)
 
-base_dir_2020 = 'input/kaggle-survey-2020/'
+base_dir_2020 = os.path.abspath('') + '/input/kaggle-survey-2020/'
 file_name_2020 = 'kaggle_survey_2020_responses.csv'
 responses_df_2020 = load_survey_data(base_dir_2020,file_name_2020)
 
-base_dir_2021 = 'input/kaggle-survey-2021/'
+base_dir_2021 = os.path.abspath('') + '/input/kaggle-survey-2021/'
 file_name_2021 = 'kaggle_survey_2021_responses.csv'
 responses_df_2021 = load_survey_data(base_dir_2021,file_name_2021)
 
-base_dir_2022 = 'input/kaggle-survey-2022/'
+base_dir_2022 = os.path.abspath('') + '/input/kaggle-survey-2022/'
 file_name_2022 = 'kaggle_survey_2022_responses.csv'
 responses_df_2022 = load_survey_data(base_dir_2022,file_name_2022)
 

@@ -24,7 +24,7 @@ import numpy as np
 import os
 # STEFANOS: Conditionally import Modin Pandas
 import pandas as pd
-import seaborn as sns
+# import seaborn as sns
 import matplotlib.pyplot as plt
 
 
@@ -42,7 +42,7 @@ passmark = 40
 # In[3]:
 
 
-df = pd.read_csv("input/StudentsPerformance.csv")
+df = pd.read_csv(os.path.abspath('') + "/input/StudentsPerformance.csv")
 
 
 # # -- STEFANOS -- Replicate Data

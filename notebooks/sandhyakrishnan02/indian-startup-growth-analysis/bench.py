@@ -23,7 +23,7 @@ import string
 # In[2]:
 
 
-df = pd.read_csv('input/indian-startup-recognized-by-dpiit/Startup_Counts_Across_India.csv')
+df = pd.read_csv(os.path.abspath('') + '/input/indian-startup-recognized-by-dpiit/Startup_Counts_Across_India.csv')
 df.head().style.background_gradient(cmap='coolwarm')
 
 

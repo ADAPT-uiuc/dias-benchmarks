@@ -12,7 +12,7 @@
 # In[3]:
 
 
-get_ipython().system('pip install dias')
+# !pip install dias
 
 
 # In[6]:
@@ -42,10 +42,10 @@ import regex as re # For String searches
 # For example, running this (by clicking run or pressing Shift+Enter) will list all files under the input directory
 
 import os
-for dirname, _, filenames in os.walk('./input'):
+for dirname, _, filenames in os.walk(os.path.abspath('') +'/input'):
     for filename in filenames:
         print(os.path.join(dirname, filename))
-import dias.rewriter
+
 # You can write up to 20GB to the current directory (/kaggle/working/) that gets preserved as output when you create a version using "Save & Run All" 
 # You can also write temporary files to /kaggle/temp/, but they won't be saved outside of the current session
 

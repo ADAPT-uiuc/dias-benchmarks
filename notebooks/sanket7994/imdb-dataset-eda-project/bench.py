@@ -17,7 +17,7 @@ import pandas as pd
 # For example, running this (by clicking run or pressing Shift+Enter) will list all files under the input directory
 
 import os
-for dirname, _, filenames in os.walk('input'):
+for dirname, _, filenames in os.walk(os.path.dirname('') + '/input'):
     for filename in filenames:
         print(os.path.join(dirname, filename))
 

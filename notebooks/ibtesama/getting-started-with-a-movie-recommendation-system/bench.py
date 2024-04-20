@@ -17,8 +17,8 @@ else:
     # STEFANOS: Import regular Pandas
     import pandas as pd
 import numpy as np 
-df1=pd.read_csv('input/tmdb-movie-metadata/tmdb_5000_credits.csv')
-df2=pd.read_csv('input/tmdb-movie-metadata/tmdb_5000_movies.csv')
+df1=pd.read_csv(os.path.abspath('') + '/input/tmdb-movie-metadata/tmdb_5000_credits.csv')
+df2=pd.read_csv(os.path.abspath('') + '/input/tmdb-movie-metadata/tmdb_5000_movies.csv')
 
 
 # # -- STEFANOS -- Replicate Data

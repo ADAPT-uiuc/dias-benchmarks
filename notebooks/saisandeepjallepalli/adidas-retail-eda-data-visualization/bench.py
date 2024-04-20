@@ -34,7 +34,7 @@ for dirname, _, filenames in os.walk('/kaggle/input'):
 # In[2]:
 
 
-df = pd.read_csv("input/adidas-us-retail-products-dataset/adidas.csv")
+df = pd.read_csv(os.path.abspath('') + "/input/adidas-us-retail-products-dataset/adidas.csv")
 
 
 # # -- STEFANOS -- Replicate Data

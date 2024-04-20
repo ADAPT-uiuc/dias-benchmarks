@@ -50,7 +50,7 @@ warnings.filterwarnings('ignore')
 
 
 #bring in the six packs
-df_train = pd.read_csv('input/train.csv')
+df_train = pd.read_csv(os.path.abspath('') + '/input/train.csv')
 
 
 # # -- STEFANOS -- Replicate Data

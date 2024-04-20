@@ -34,6 +34,29 @@ from sklearn.feature_extraction.text import CountVectorizer
 import os
 
 
+# In[ ]:
+
+
+def hash_anything(obj):
+    import pandas.util
+    if isinstance(obj, pd.DataFrame):
+        return pandas.util.hash_pandas_object(obj, index=False).to_numpy().data
+    elif isinstance(obj, np.ndarray):
+        return obj.data
+    elif isinstance(obj, list):
+        return str(obj).encode()
+    else:
+        return str(obj).encode()
+
+
+def hash_dataframe(df):
+    import xxhash
+    h = xxhash.xxh64()
+    for column in df.round(6).columns:
+        h.update(hash_anything(df[column]))
+    return h.digest()
+
+
 # In[2]:
 
 
@@ -658,6 +681,12 @@ for i in (range(len(train_text_df))):
     
     
 train_text_df['entities'] = all_entities
+
+
+# In[ ]:
+
+
+print(hash_dataframe(train_text_df))
 
 
 # In[41]:

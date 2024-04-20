@@ -44,6 +44,29 @@ import pandas as pd
 import numpy as np
 
 
+# In[ ]:
+
+
+def hash_anything(obj):
+    import pandas.util
+    if isinstance(obj, pd.DataFrame):
+        return pandas.util.hash_pandas_object(obj, index=False).to_numpy().data
+    elif isinstance(obj, np.ndarray):
+        return obj.data
+    elif isinstance(obj, list):
+        return str(obj).encode()
+    else:
+        return str(obj).encode()
+
+
+def hash_dataframe(df):
+    import xxhash
+    h = xxhash.xxh64()
+    for column in df.round(6).columns:
+        h.update(hash_anything(df[column]))
+    return h.digest()
+
+
 # <a id="check"></a>
 # # 2️⃣ㅣCheck Data and Preparation💾
 
@@ -205,6 +228,12 @@ course_gp
 course["course_rating_mean"] = None
 for i in course_gp.index:
     course.loc[i, "course_rating_mean"] = course_gp.loc[i, "course_rating_int"]
+
+
+# In[ ]:
+
+
+print(hash_dataframe(course))
 
 
 # In[129]:

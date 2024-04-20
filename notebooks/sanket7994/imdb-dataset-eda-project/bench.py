@@ -25,6 +25,29 @@ for dirname, _, filenames in os.walk(os.path.dirname('') + '/input'):
 # You can also write temporary files to /kaggle/temp/, but they won't be saved outside of the current session
 
 
+# In[ ]:
+
+
+def hash_anything(obj):
+    import pandas.util
+    if isinstance(obj, pd.DataFrame):
+        return pandas.util.hash_pandas_object(obj, index=False).to_numpy().data
+    elif isinstance(obj, np.ndarray):
+        return obj.data
+    elif isinstance(obj, list):
+        return str(obj).encode()
+    else:
+        return str(obj).encode()
+
+
+def hash_dataframe(df):
+    import xxhash
+    h = xxhash.xxh64()
+    for column in df.round(6).columns:
+        h.update(hash_anything(df[column]))
+    return h.digest()
+
+
 # In[2]:
 
 
@@ -32,6 +55,12 @@ df = pd.read_table('input/imdb-official-movies-dataset/title-ratings.tsv', low_m
 df2 = pd.read_table('input/imdb-official-movies-dataset/title-metadata.tsv',low_memory=False)
 if "IREWR_LESS_REPLICATION" in os.environ and os.environ["IREWR_LESS_REPLICATION"] == "True":
     df2 = df2[:1_500_000]
+
+
+# In[ ]:
+
+
+print(hash_dataframe(df2))
 
 
 # In[3]:

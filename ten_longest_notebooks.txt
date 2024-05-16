@@ -1,0 +1,10 @@
+notebooks/joshuaswords/netflix-data-visualization/bench.ipynb
+notebooks/ibtesama/getting-started-with-a-movie-recommendation-system/bench.ipynb
+notebooks/mpwolke/just-you-wait-rishi-sunak/bench.ipynb
+notebooks/erikbruin/nlp-on-student-writing-eda/bench.ipynb
+notebooks/ampiiere/animal-crossing-villager-popularity-analysis/bench.ipynb
+notebooks/lextoumbourou/feedback3-eda-hf-custom-trainer-sift/bench.ipynb
+notebooks/dataranch/supermarket-sales-prediction-xgboost-fastai/bench.ipynb
+notebooks/spscientist/student-performance-in-exams/bench.ipynb
+notebooks/aieducation/what-course-are-you-going-to-take/bench.ipynb
+notebooks/gksriharsha/eda-speedtests/bench.ipynb

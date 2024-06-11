@@ -1,0 +1,1 @@
+For Dask, it's less clear whether I'm doing everything correctly. Because we're timing individual operations, I think calling `.compute()` is the correct thing to do.

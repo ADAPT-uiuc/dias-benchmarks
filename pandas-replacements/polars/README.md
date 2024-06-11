@@ -1,0 +1,1 @@
+This: https://github.com/pola-rs/tpch/blob/main/polars_queries/utils.py#L85 may be useful, although I think the way I run them is fair.

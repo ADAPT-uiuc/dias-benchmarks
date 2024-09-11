@@ -6,11 +6,6 @@
 
 ## Reproducing the environment
 
-```bash
-sudo apt-get update
-git clone https://github.com/baziotis/pandas-alt-exps
-```
-
 ### Install Python
 
 ```bash
@@ -32,12 +27,12 @@ source env/bin/activate
 
 ### Install dependencies
 ```bash
-pip install -r pandas-alt-exps/requirements.txt
+pip install -r <dias-benchmarks root>/pandas-replacements/requirements.txt
 ```
 
 ### Download datasets
 ```bash
-pandas-alt-exps/datasets/download_datasets.sh
+<dias-benchmarks root>/pandas-replacements/datasets/download_datasets.sh
 ```
 
 ### Reproducing numbers
@@ -45,3 +40,8 @@ You should be able to run any of the notebooks with Jupyter. You should run a no
 because Jupyter virtualizes many things, including e.g., the disk. Note that the numbers may be quite
 different from run to run and from the paper. We could not avoid this variability. However, the _conclusions_
 should be the same, namely the orders of magnitude of slowdowns and speedups mentioned in the paper should be the same.
+
+### Visualization
+
+Unfortunately, the visualization (Table 2 in the paper) was not produced with any script and I don't know how to create
+one because I used Google Slides to create it. The number were copied manually from the notebook cells.

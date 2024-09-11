@@ -6,7 +6,8 @@ The system we ran the experiments on had:
 - Samsung 980 PRO NVMe SSD, 256GB
 - Ubuntu 22.04.1 LTS.
 
-To reproduce the results as accurately, please do not run on a VM and use a fast disk.
+To reproduce the results as accurately as possible, please do not run on a VM
+and use a fast disk. That said, we have reproduced the results on AWS instances.
 
 ## Setting Up the Python Environment
 
@@ -47,7 +48,7 @@ export DIAS_ROOT=<dias root>
 
 ### Download the benchmark infrastructure and code (this repo)
 ```bash
-git clone https://github.com/ADAPT-uiuc/dias-benchmarks --single-branch -b camera-ready
+git clone https://github.com/ADAPT-uiuc/dias-benchmarks --single-branch -b sigmod-ari
 ```
 
 ### Install library dependencies
